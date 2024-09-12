@@ -11,7 +11,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     //periksa apakah file yg diupload dalam format video MP4
     $fileType = mime_content_type($file['tmp_name']) ;
-    $allowedType = 'vdeo/mp4' ;
+    $allowedType = 'video/mp4' ;
 
     if($fileType !== $allowedType) {
         die("Only .mp4 video files are allowed.") ;
