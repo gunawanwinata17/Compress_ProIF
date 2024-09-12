@@ -16,7 +16,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     
 
     if($file["type"] !== $allowedType) {
-        echo $file["type"]
+        echo $file["type"] ;
         die("Only .mp4 video files are allowed.") ;
     }
 
