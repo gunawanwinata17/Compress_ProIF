@@ -7,7 +7,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     //mengambil detail dari file yg diupload
     $file = $_FILES['video'];
-    $targetFile = $targetDir . $file['name']) ;
+    $targetFile = $targetDir . $file['name'] ;
 
     //periksa apakah file yg diupload dalam format video MP4
     $fileType = mime_content_type($file['tmp_name']) ;
