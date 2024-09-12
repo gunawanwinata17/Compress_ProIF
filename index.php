@@ -23,7 +23,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     //pindahkan file yg diupload ke direktori target
-    if(move_uploaded_file($file['tmp_name'], $targetFile)) {
+    if(move_uploaded_file($file['tmp_name'], $targetDir)) {
         echo "The file " . htmlspecialchars($file['name']) . " has been uploaded successfully." ;
     }else{
         echo "Sorry there was an error uploading your file." ;
