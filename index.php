@@ -7,7 +7,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     //mengambil detail dari file yg diupload
     $file = $_FILES['video'];
-    $targetFile = $targetDir . basename($file['name']) ;
+    $targetFile = $targetDir . $file['name']) ;
 
     //periksa apakah file yg diupload dalam format video MP4
     $fileType = mime_content_type($file['tmp_name']) ;
@@ -23,7 +23,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     //pindahkan file yg diupload ke direktori target
-    if(move_uploaded_file($file['tmp_name'], $targetDir)) {
+    if(move_uploaded_file($file['tmp_name'], $targetFile)) {
         echo "The file " . htmlspecialchars($file['name']) . " has been uploaded successfully." ;
     }else{
         echo "Sorry there was an error uploading your file." ;
