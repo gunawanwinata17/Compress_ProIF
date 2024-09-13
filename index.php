@@ -66,13 +66,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin: 0;
         }
 
-        .container {
-            background-color: #ffffff;
-            padding: 20px 40px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
+            .container {
+                background-color: #ffffff;
+                padding: 20px 40px;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                text-align: center;
+            }
 
         .container h1 {
             color: #333;
@@ -104,28 +104,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background-color: #45a049;
         }
 
-        p {
-            margin-bottom: 30px;
-            color: #777;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <?php echo '<h1>Compress Video Here</h1>'; ?>
-        
-        <!-- form untuk upload file video -->
-        <form action="upload.php" method="post" enctype="multipart/form-data">
-            <label for="videoUpload">Upload Video (.mp4):</label>
-            <input type="file" name="video" id="videoUpload" accept=".mp4" required>
-            <br>
-            <input type="submit" value="Upload Video">
-        </form>
-
-        <!-- form untuk menjalankan perintah 'ls -l' -->
-        <form method="post">
-            <button type="submit" name="run_command">Run "ls" Command</button>
-        </form>
-    </div>
-</body>
+            p {
+                margin-bottom: 30px;
+                color: #777;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <?php echo '<h1>Compress Video Here</h1>'; ?>
+            
+            <!-- form untuk upload file video -->
+            <form action="upload.php" method="post" enctype="multipart/form-data">
+                <label for="videoUpload">Upload Video (.mp4):</label>
+                <input type="file" name="video" id="videoUpload" accept=".mp4" required>
+                <br>
+                <input type="submit" value="Upload Video">
+            </form>
+        </div>
+    </body>
 </html>
+
