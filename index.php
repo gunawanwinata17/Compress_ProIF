@@ -70,6 +70,10 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
             text-align: center;
             position: relative;
             transition: background-color 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         .container.dragover {
@@ -120,6 +124,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s;
         }
 
         .button:hover {
@@ -129,6 +134,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         .error-message, .success-message {
             margin-top: 10px;
             font-size: 16px;
+            text-align: center;
         }
 
         .success-message {
