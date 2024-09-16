@@ -10,28 +10,38 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     $targetFile = $targetDir . basename($file['name']);
 
     //periksa apakah file yg diupload dalam format video MP4
-    //$fileType = $file["type"] == ;
-    $allowedType = 'video/mp4' ;
+    $allowedType = 'video/mp4';
 
-    
+    //inisialisasi response
+    $response = ['status' => '', 'message' => ''];
 
     if($file["type"] !== $allowedType) {
-        echo $file["type"] ;
-        die("Only .mp4 video files are allowed.") ;
+        $response['status'] = 'error';
+        $response['message'] = "Only .mp4 video files are allowed.";
+        echo json_encode($response);
+        exit;
     }
 
     //periksa apakah terjadi error saat upload video
     if($file['error'] !== UPLOAD_ERR_OK) {
-        die("Error occurred while uploading the file.") ;
+        $response['status'] = 'error';
+        $response['message'] = "Error occurred while uploading the file.";
+        echo json_encode($response);
+        exit;
     }
 
     //pindahkan file yg diupload ke direktori target
     if(move_uploaded_file($file['tmp_name'], $targetFile)) {
-        echo "The file " . htmlspecialchars($file['name']) . " has been uploaded successfully." ;
-    }else{
-        echo "Sorry there was an error uploading your file." ;
+        $response['status'] = 'success';
+        $response['message'] = "The file " . htmlspecialchars($file['name']) . " has been uploaded successfully.";
+    } else {
+        $response['status'] = 'error';
+        $response['message'] = "Sorry, there was an error uploading your file.";
     }
 
+    //mengirim response sebagai JSON
+    echo json_encode($response);
+    exit;
 }
 
 ?>
@@ -96,9 +106,37 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
             background-color: #45a049;
         }
 
-        .logo{
+        .logo {
             width: 50%;
             height: 50%;
+        }
+
+        .button {
+            display: none;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        .error-message, .success-message {
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        .success-message {
+            color: green;
+        }
+
+        .error-message {
+            color: red;
         }
     </style>
 </head>
@@ -108,21 +146,30 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         <h1>Compress Video Here</h1>
         
         <!-- form untuk upload file video -->
-        <form id="uploadForm" action="index.php" method="post" enctype="multipart/form-data">
+        <form id="uploadForm" enctype="multipart/form-data">
             <label for="videoUpload">Upload Video (.mp4):</label>
             <input type="file" name="video" id="videoUpload" accept=".mp4" required>
             <p class="drag-drop-text">or drop a file here</p>
             <br>
             <input type="submit" value="Upload Video">
         </form>
+
+        <!-- pesan hasil upload -->
+        <p id="message" class="success-message"></p>
+
+        <!-- tombol akan muncul setelah upload -->
+        <button id="actionButton" class="button">Continue</button>
     </div>
 
     <script>
-        // Mengambil elemen container dan input file
+        // mengambil elemen container dan input file
         const container = document.getElementById('dropContainer');
         const fileInput = document.getElementById('videoUpload');
+        const uploadForm = document.getElementById('uploadForm');
+        const message = document.getElementById('message');
+        const actionButton = document.getElementById('actionButton');
 
-        // Mencegah perilaku default untuk peristiwa drag and drop
+        // mencegah perilaku default untuk peristiwa drag and drop
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             container.addEventListener(eventName, (e) => {
                 e.preventDefault();
@@ -130,28 +177,59 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
             });
         });
 
-        // Menambahkan kelas saat file sedang diseret ke dalam container
+        // menambahkan kelas saat file sedang diseret ke dalam container
         ['dragenter', 'dragover'].forEach(eventName => {
             container.addEventListener(eventName, () => {
                 container.classList.add('dragover');
             });
         });
 
-        // Menghapus kelas saat file tidak lagi berada di atas container
+        // menghapus kelas saat file tidak lagi berada di atas container
         ['dragleave', 'drop'].forEach(eventName => {
             container.addEventListener(eventName, () => {
                 container.classList.remove('dragover');
             });
         });
 
-        // Menangani peristiwa drop dan tetapkan file ke input
+        // menangani peristiwa drop dan tetapkan file ke input
         container.addEventListener('drop', (e) => {
             const droppedFiles = e.dataTransfer.files;
             if (droppedFiles.length) {
                 fileInput.files = droppedFiles;
             }
         });
+
+        // menangani pengiriman form
+        uploadForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            
+            const formData = new FormData(uploadForm);
+
+            fetch('index.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    message.textContent = data.message;
+                    message.classList.remove('error-message');
+                    message.classList.add('success-message');
+                    actionButton.style.display = 'block'; // tampilkan tombol setelah upload sukses
+                } else {
+                    message.textContent = data.message;
+                    message.classList.remove('success-message');
+                    message.classList.add('error-message');
+                    actionButton.style.display = 'block'; // tampilkan tombol setelah upload gagal
+                }
+            })
+            .catch(error => {
+                message.textContent = "There was an error during the upload.";
+                message.classList.add('error-message');
+                actionButton.style.display = 'block';
+            });
+        });
     </script>
 </body>
 </html>
-
