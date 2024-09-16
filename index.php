@@ -9,6 +9,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     $file = $_FILES['video'];
     $targetFile = $targetDir . basename($file['name']);
 
+    //file yg sudah dicompressed
+    $compressedFile = $targetDir . 'compressed_' . basename($file['name']) ;
+
     //periksa apakah file yg diupload dalam format video MP4
     $allowedType = 'video/mp4';
 
@@ -32,8 +35,19 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     //pindahkan file yg diupload ke direktori target
     if(move_uploaded_file($file['tmp_name'], $targetFile)) {
-        $response['status'] = 'success';
-        $response['message'] = "The file " . htmlspecialchars($file['name']) . " has been uploaded successfully.";
+        
+        $ffmpegCommand = "ffmpeg -i " . escapeshellarg($targetFile) . " " . escapeshellarg($compressedFile); 
+        
+        exec($ffmpegCommand, $output, $returnCode) ;
+        
+        if($returnCode === 0) {
+            $response['status'] = 'success';
+            $response['message'] = "The file " . htmlspecialchars($file['name']) . " has been uploaded successfully.";
+        } else {
+            $response['status'] = 'error' ;
+            $response['message'] = "Video upload was succesful, but compression failed." ;
+        }
+
     } else {
         $response['status'] = 'error';
         $response['message'] = "Sorry, there was an error uploading your file.";
