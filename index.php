@@ -158,7 +158,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p id="message" class="success-message"></p>
 
         <!-- tombol akan muncul setelah upload -->
-        <button id="actionButton" class="button">Continue</button>
+        <button id="actionButton" class="button">Download</button>
     </div>
 
     <script>
@@ -216,18 +216,18 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                     message.textContent = data.message;
                     message.classList.remove('error-message');
                     message.classList.add('success-message');
-                    actionButton.style.display = 'block'; // tampilkan tombol setelah upload sukses
+                    //actionButton.style.display = 'block'; // tampilkan tombol setelah upload sukses
                 } else {
                     message.textContent = data.message;
                     message.classList.remove('success-message');
                     message.classList.add('error-message');
-                    actionButton.style.display = 'block'; // tampilkan tombol setelah upload gagal
+                    //actionButton.style.display = 'block'; // tampilkan tombol setelah upload gagal
                 }
             })
             .catch(error => {
                 message.textContent = "There was an error during the upload.";
                 message.classList.add('error-message');
-                actionButton.style.display = 'block';
+                //actionButton.style.display = 'block';
             });
         });
     </script>
