@@ -34,15 +34,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Menjalankan perintah 'ls -l' jika tombol 'run_command' ditekan
+    // Menjalankan perintah tombol 'run_command' ditekan
     if (isset($_POST['run_command'])) {
-        $command = 'ls -l';
-        $output = shell_exec($command);
-        $error = error_get_last();
+        $host = 'compress.ifunpar.id';
+        $user = 'gunawan';
+        $output = exec("ssh $user@$host");
 
         echo "<h3>Command Output:</h3>";
         echo "<pre>$output</pre>";
-        
+
+        $directory = '/home/gunawan/proif/Compress_ProIF/uploads' . basename($file);
+
         if ($error) {
             echo "<h3>Error:</h3>";
             echo "<pre>" . print_r($error, true) . "</pre>";
@@ -53,6 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Video Compressor</title>
     <style>
@@ -66,13 +69,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin: 0;
         }
 
-            .container {
-                background-color: #ffffff;
-                padding: 20px 40px;
-                border-radius: 10px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                text-align: center;
-            }
+        .container {
+            background-color: #ffffff;
+            padding: 20px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
 
         .container h1 {
             color: #333;
@@ -104,24 +107,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background-color: #45a049;
         }
 
-            p {
-                margin-bottom: 30px;
-                color: #777;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <?php echo '<h1>Compress Video Here</h1>'; ?>
-            
-            <!-- form untuk upload file video -->
-            <form action="upload.php" method="post" enctype="multipart/form-data">
-                <label for="videoUpload">Upload Video (.mp4):</label>
-                <input type="file" name="video" id="videoUpload" accept=".mp4" required>
-                <br>
-                <input type="submit" value="Upload Video">
-            </form>
-        </div>
-    </body>
-</html>
+        p {
+            margin-bottom: 30px;
+            color: #777;
+        }
+    </style>
+</head>
 
+<body>
+    <div class="container">
+        <?php echo '<h1>Compress Video Here</h1>'; ?>
+
+        <!-- form untuk upload file video -->
+        <form action="upload.php" method="post" enctype="multipart/form-data">
+            <label for="videoUpload">Upload Video (.mp4):</label>
+            <input type="file" name="video" id="videoUpload" accept=".mp4" required>
+            <br>
+            <input type="submit" value="Upload Video">
+        </form>
+
+        <!-- form untuk menjalankan perintah 'ls -l' -->
+        <form method="post">
+            <input type="submit" name="run_command" value="Run 'ls' Command">
+        </form>
+    </div>
+</body>
+
+</html>
