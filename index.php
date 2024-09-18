@@ -38,11 +38,14 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $ffmpegCommand = "ffmpeg -i " . escapeshellarg($targetFile) . " " . escapeshellarg($compressedFile); 
         
-        exec($ffmpegCommand, $output, $returnCode) ;
+        ob_start(); 
+        system($ffmpegCommand, $returnCode);
+        ob_end_clean();
         
         if($returnCode === 0) {
             $response['status'] = 'success';
             $response['message'] = "The file " . htmlspecialchars($file['name']) . " has been uploaded successfully.";
+            $response['compressed_file'] = $compressedFile; 
         } else {
             $response['status'] = 'error' ;
             $response['message'] = "Video upload was succesful, but compression failed." ;
