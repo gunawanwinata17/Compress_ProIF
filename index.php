@@ -250,6 +250,23 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                 actionButton.style.display = 'block';
             });
         });
+
+        // tambahkan event listener pada tombol download
+        actionButton.addEventListener('click', function() {
+            // dapatkan nama file yang telah diupload
+            const fileName = fileInput.files[0].name;
+
+            // dapatkan nama file yang telah dikompresi
+            const compressedFileName = 'compressed_' + fileName;
+
+            // buat link download
+            const downloadLink = document.createElement('a');
+            downloadLink.href = 'download.php?file=' + compressedFileName;
+            downloadLink.download = compressedFileName;
+
+            // simulasikan klik pada link download
+            downloadLink.click();
+        });
     </script>
 </body>
 </html>
