@@ -1,61 +1,68 @@
-<?php
-include('run.php');
+<?php 
 
-// Direktori target file yang diupload di server lokal
-$targetDir = "uploads/";
+//target direktori file yg diupload pada server 
+$targetDir = "uploads/" ;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Mengambil detail dari file yang diupload
-    if (isset($_FILES['video'])) {
-        $file = $_FILES['video'];
-        $targetFile = $targetDir . basename($file['name']);
+if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-        // Periksa apakah file yang diupload dalam format video MP4
-        $fileType = mime_content_type($file['tmp_name']);
-        $allowedType = 'video/mp4';
+    //mengambil detail dari file yg diupload
+    $file = $_FILES['video'];
+    $targetFile = $targetDir . basename($file['name']);
 
-        if ($fileType !== $allowedType) {
-            die("Only .mp4 video files are allowed.");
-        }
+    //file yg sudah dicompressed
+    $compressedFile = $targetDir . 'compressed_' . basename($file['name']) ;
 
-        // Periksa apakah terjadi error saat upload video
-        if ($file['error'] !== UPLOAD_ERR_OK) {
-            die("Error occurred while uploading the file.");
-        }
+    //periksa apakah file yg diupload dalam format video MP4
+    $allowedType = 'video/mp4';
 
-        // Pindahkan file yang diupload ke direktori target
-        if (move_uploaded_file($file['tmp_name'], $targetFile)) {
-            echo "The file " . htmlspecialchars($file['name']) . " has been uploaded successfully.<br>";
+    //inisialisasi response
+    $response = ['status' => '', 'message' => ''];
 
-            // Jalankan fungsi untuk mengupload dan mengompres file di server remote
-            runCompress($targetFile);
+    if($file["type"] !== $allowedType) {
+        $response['status'] = 'error';
+        $response['message'] = "Only .mp4 video files are allowed.";
+        echo json_encode($response);
+        exit;
+    }
+
+    //periksa apakah terjadi error saat upload video
+    if($file['error'] !== UPLOAD_ERR_OK) {
+        $response['status'] = 'error';
+        $response['message'] = "Error occurred while uploading the file.";
+        echo json_encode($response);
+        exit;
+    }
+
+    //pindahkan file yg diupload ke direktori target
+    if(move_uploaded_file($file['tmp_name'], $targetFile)) {
+        
+        $ffmpegCommand = "ffmpeg -i " . escapeshellarg($targetFile) . " " . escapeshellarg($compressedFile); 
+        
+        exec($ffmpegCommand, $output, $returnCode) ;
+        
+        if($returnCode === 0) {
+            $response['status'] = 'success';
+            $response['message'] = "The file " . htmlspecialchars($file['name']) . " has been uploaded successfully.";
         } else {
-            echo "Sorry, there was an error uploading your file.";
+            $response['status'] = 'error' ;
+            $response['message'] = "Video upload was succesful, but compression failed." ;
         }
+
+    } else {
+        $response['status'] = 'error';
+        $response['message'] = "Sorry, there was an error uploading your file.";
     }
 
-    // Menjalankan perintah tombol 'run_command' ditekan
-    if (isset($_POST['run_command'])) {
-        $host = 'compress.ifunpar.id';
-        $user = 'gunawan';
-        $output = exec("ssh $user@$host");
-
-        echo "<h3>Command Output:</h3>";
-        echo "<pre>$output</pre>";
-
-        $directory = '/home/gunawan/proif/Compress_ProIF/uploads' . basename($file);
-
-        if ($error) {
-            echo "<h3>Error:</h3>";
-            echo "<pre>" . print_r($error, true) . "</pre>";
-        }
-    }
+    //mengirim response sebagai JSON
+    echo json_encode($response);
+    exit;
 }
+
 ?>
+
 
 <!DOCTYPE html>
 <html>
-
 <head>
     <title>Video Compressor</title>
     <style>
@@ -75,6 +82,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
+            position: relative;
+            transition: background-color 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container.dragover {
+            background-color: #e3f2fd;
         }
 
         .container h1 {
@@ -107,30 +124,132 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background-color: #45a049;
         }
 
-        p {
-            margin-bottom: 30px;
-            color: #777;
+        .logo {
+            width: 50%;
+            height: 50%;
+        }
+
+        .button {
+            display: none;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        .error-message, .success-message {
+            margin-top: 10px;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .success-message {
+            color: green;
+        }
+
+        .error-message {
+            color: red;
         }
     </style>
 </head>
-
 <body>
-    <div class="container">
-        <?php echo '<h1>Compress Video Here</h1>'; ?>
-
+    <div class="container" id="dropContainer">
+        <img src="LogoInformatika.png" class="logo">
+        <h1>Compress Video Here</h1>
+        
         <!-- form untuk upload file video -->
-        <form action="upload.php" method="post" enctype="multipart/form-data">
+        <form id="uploadForm" enctype="multipart/form-data">
             <label for="videoUpload">Upload Video (.mp4):</label>
             <input type="file" name="video" id="videoUpload" accept=".mp4" required>
+            <p class="drag-drop-text">or drop a file here</p>
             <br>
             <input type="submit" value="Upload Video">
         </form>
 
-        <!-- form untuk menjalankan perintah 'ls -l' -->
-        <form method="post">
-            <input type="submit" name="run_command" value="Run 'ls' Command">
-        </form>
-    </div>
-</body>
+        <!-- pesan hasil upload -->
+        <p id="message" class="success-message"></p>
 
+        <!-- tombol akan muncul setelah upload -->
+        <button id="actionButton" class="button">Download</button>
+    </div>
+
+    <script>
+        // mengambil elemen container dan input file
+        const container = document.getElementById('dropContainer');
+        const fileInput = document.getElementById('videoUpload');
+        const uploadForm = document.getElementById('uploadForm');
+        const message = document.getElementById('message');
+        const actionButton = document.getElementById('actionButton');
+
+        // mencegah perilaku default untuk peristiwa drag and drop
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            container.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        });
+
+        // menambahkan kelas saat file sedang diseret ke dalam container
+        ['dragenter', 'dragover'].forEach(eventName => {
+            container.addEventListener(eventName, () => {
+                container.classList.add('dragover');
+            });
+        });
+
+        // menghapus kelas saat file tidak lagi berada di atas container
+        ['dragleave', 'drop'].forEach(eventName => {
+            container.addEventListener(eventName, () => {
+                container.classList.remove('dragover');
+            });
+        });
+
+        // menangani peristiwa drop dan tetapkan file ke input
+        container.addEventListener('drop', (e) => {
+            const droppedFiles = e.dataTransfer.files;
+            if (droppedFiles.length) {
+                fileInput.files = droppedFiles;
+            }
+        });
+
+        // menangani pengiriman form
+        uploadForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            
+            const formData = new FormData(uploadForm);
+
+            fetch('index.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    message.textContent = data.message;
+                    message.classList.remove('error-message');
+                    message.classList.add('success-message');
+                    actionButton.style.display = 'block'; // tampilkan tombol setelah upload sukses
+                } else {
+                    message.textContent = data.message;
+                    message.classList.remove('success-message');
+                    message.classList.add('error-message');
+                    actionButton.style.display = 'block'; // tampilkan tombol setelah upload gagal
+                }
+            })
+            .catch(error => {
+                message.textContent = "There was an error during the upload.";
+                message.classList.add('error-message');
+                actionButton.style.display = 'block';
+            });
+        });
+    </script>
+</body>
 </html>
