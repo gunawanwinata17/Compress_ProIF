@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $targetFile = $targetDir . basename($file['name']);
 
     //file yg sudah dicompressed
-    $compressedFile = $targetDir . 'compressed_' . basename($file['name']);
+    $compressedFile = $targetDir . 'compressed_' . basename($file['name'] ) ;
 
     //periksa apakah file yg diupload dalam format video MP4
     $allowedType = 'video/mp4';
@@ -34,19 +34,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     //pindahkan file yg diupload ke direktori target
-    if (move_uploaded_file($file['tmp_name'], $targetFile)) {
+    if(move_uploaded_file($file['tmp_name'], $targetFile)) {
+        
+        $ffmpegCommand = "ffmpeg -i " . escapeshellarg($targetFile) . " -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 1000k " . escapeshellarg($compressedFile);
 
-        $ffmpegCommand = "ffmpeg -i " . escapeshellarg($targetFile) . " " . escapeshellarg($compressedFile);
-
-        exec($ffmpegCommand, $output, $returnCode);
-
-        if ($returnCode === 0) {
+        
+        ob_start(); 
+        system($ffmpegCommand, $returnCode);
+        ob_end_clean();
+        
+        if($returnCode === 0) {
             $response['status'] = 'success';
             $response['message'] = "The file " . htmlspecialchars($file['name']) . " has been uploaded successfully.";
-            $response['download'] = $compressedFile;
+            $response['compressed_file'] = $compressedFile; 
         } else {
-            $response['status'] = 'error';
-            $response['message'] = "Video upload was succesful, but compression failed.";
+            $response['status'] = 'error' ;
+            $response['message'] = "Video upload was succesful, but compression failed." ;
         }
 
     } else {
@@ -256,6 +259,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     message.classList.add('error-message');
                     actionButton.style.display = 'block';
                 });
+        });
+
+        // tambahkan event listener pada tombol download
+        actionButton.addEventListener('click', function() {
+            // dapatkan nama file yang telah diupload
+            const fileName = fileInput.files[0].name;
+
+            // dapatkan nama file yang telah dikompresi
+            const compressedFileName = 'compressed_' + fileName;
+
+            // buat link download
+            const downloadLink = document.createElement('a');
+            downloadLink.href = 'download.php?file=' + compressedFileName;
+            downloadLink.download = compressedFileName ;
+
+            // simulasikan klik pada link download
+            downloadLink.click();
         });
     </script>
 </body>
