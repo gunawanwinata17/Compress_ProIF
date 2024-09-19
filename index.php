@@ -1,9 +1,9 @@
-<?php 
+<?php
 
 //target direktori file yg diupload pada server 
-$targetDir = "uploads/" ;
+$targetDir = "uploads/";
 
-if($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     //mengambil detail dari file yg diupload
     $file = $_FILES['video'];
@@ -18,7 +18,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     //inisialisasi response
     $response = ['status' => '', 'message' => ''];
 
-    if($file["type"] !== $allowedType) {
+    if ($file["type"] !== $allowedType) {
         $response['status'] = 'error';
         $response['message'] = "Only .mp4 video files are allowed.";
         echo json_encode($response);
@@ -26,7 +26,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     //periksa apakah terjadi error saat upload video
-    if($file['error'] !== UPLOAD_ERR_OK) {
+    if ($file['error'] !== UPLOAD_ERR_OK) {
         $response['status'] = 'error';
         $response['message'] = "Error occurred while uploading the file.";
         echo json_encode($response);
@@ -36,7 +36,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     //pindahkan file yg diupload ke direktori target
     if(move_uploaded_file($file['tmp_name'], $targetFile)) {
         
-        $ffmpegCommand = "ffmpeg -i " . escapeshellarg($targetFile) . " " . escapeshellarg($compressedFile); 
+        $ffmpegCommand = "ffmpeg -i " . escapeshellarg($targetFile) . " -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 1000k " . escapeshellarg($compressedFile);
+
         
         ob_start(); 
         system($ffmpegCommand, $returnCode);
@@ -58,6 +59,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     //mengirim response sebagai JSON
     echo json_encode($response);
+
     exit;
 }
 
@@ -66,6 +68,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Video Compressor</title>
     <style>
@@ -148,7 +151,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
             background-color: #0056b3;
         }
 
-        .error-message, .success-message {
+        .error-message,
+        .success-message {
             margin-top: 10px;
             font-size: 16px;
             text-align: center;
@@ -163,11 +167,12 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     </style>
 </head>
+
 <body>
     <div class="container" id="dropContainer">
         <img src="LogoInformatika.png" class="logo">
         <h1>Compress Video Here</h1>
-        
+
         <!-- form untuk upload file video -->
         <form id="uploadForm" enctype="multipart/form-data">
             <label for="videoUpload">Upload Video (.mp4):</label>
@@ -223,35 +228,37 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         });
 
         // menangani pengiriman form
-        uploadForm.addEventListener('submit', function(e) {
+        uploadForm.addEventListener('submit', function (e) {
             e.preventDefault();
 
-            
+
             const formData = new FormData(uploadForm);
 
             fetch('index.php', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    message.textContent = data.message;
-                    message.classList.remove('error-message');
-                    message.classList.add('success-message');
-                    actionButton.style.display = 'block'; // tampilkan tombol setelah upload sukses
-                } else {
-                    message.textContent = data.message;
-                    message.classList.remove('success-message');
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        message.textContent = data.message;
+                        message.classList.remove('error-message');
+                        message.classList.add('success-message');
+                        actionButton.style.display = 'block'; // tampilkan tombol setelah upload sukses
+                    } else {
+                        message.textContent = data.message;
+                        message.classList.remove('success-message');
+                        message.classList.add('error-message');
+                        actionButton.onclick = function () {
+                            window.location.href = data.download;// ketika di klik maka melakukan download data
+                        }; 
+                    }
+                })
+                .catch(error => {
+                    message.textContent = "There was an error during the upload.";
                     message.classList.add('error-message');
-                    actionButton.style.display = 'block'; // tampilkan tombol setelah upload gagal
-                }
-            })
-            .catch(error => {
-                message.textContent = "There was an error during the upload.";
-                message.classList.add('error-message');
-                actionButton.style.display = 'block';
-            });
+                    actionButton.style.display = 'block';
+                });
         });
 
         // tambahkan event listener pada tombol download
@@ -272,4 +279,5 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         });
     </script>
 </body>
+
 </html>
