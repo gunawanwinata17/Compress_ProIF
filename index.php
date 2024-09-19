@@ -259,10 +259,13 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
             // dapatkan nama file yang telah diupload
             const fileName = fileInput.files[0].name;
 
+            // dapatkan nama file yang telah dikompresi
+            const compressedFileName = 'compressed_' + fileName;
+
             // buat link download
             const downloadLink = document.createElement('a');
-            downloadLink.href = 'download.php?file=' + fileName;
-            downloadLink.download = fileName ;
+            downloadLink.href = 'download.php?file=' + compressedFileName;
+            downloadLink.download = compressedFileName ;
 
             // simulasikan klik pada link download
             downloadLink.click();
