@@ -10,7 +10,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     $targetFile = $targetDir . basename($file['name']);
 
     //file yg sudah dicompressed
-    $compressedFile = $targetDir . 'compressed_' . basename($file['name']) ;
+    $compressedFile = $targetDir . basename($file['name'] . '_compressed') ;
 
     //periksa apakah file yg diupload dalam format video MP4
     $allowedType = 'video/mp4';
@@ -260,7 +260,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
             const fileName = fileInput.files[0].name;
 
             // dapatkan nama file yang telah dikompresi
-            const compressedFileName = 'compressed_' + fileName;
+            const compressedFileName = fileName + '_compressed';
 
             // buat link download
             const downloadLink = document.createElement('a');
