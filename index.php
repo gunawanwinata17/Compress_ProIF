@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $targetFile = $targetDir . basename($file['name']);
 
     //file yg sudah dicompressed
-    $compressedFile = $targetDir . 'compressed_' . basename($file['name'] ) ;
+    $compressedFile = $targetDir . 'compressed_' . basename($file['name']);
 
     //periksa apakah file yg diupload dalam format video MP4
     $allowedType = 'video/mp4';
@@ -34,22 +34,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     //pindahkan file yg diupload ke direktori target
-    if(move_uploaded_file($file['tmp_name'], $targetFile)) {
-        
-        $ffmpegCommand = "ffmpeg -i " . escapeshellarg($targetFile) . " -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 1000k " . escapeshellarg($compressedFile);
+    if (move_uploaded_file($file['tmp_name'], $targetFile)) {
 
-        
-        ob_start(); 
+        $ffmpegCommand = "ffmpeg -i " . escapeshellarg($targetFile) . " -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 128k " . escapeshellarg($compressedFile);
+
+
+        ob_start();
         system($ffmpegCommand, $returnCode);
         ob_end_clean();
-        
-        if($returnCode === 0) {
+
+        if ($returnCode === 0) {
             $response['status'] = 'success';
             $response['message'] = "The file " . htmlspecialchars($file['name']) . " has been uploaded successfully.";
-            $response['compressed_file'] = $compressedFile; 
+            $response['compressed_file'] = $compressedFile;
         } else {
-            $response['status'] = 'error' ;
-            $response['message'] = "Video upload was succesful, but compression failed." ;
+            $response['status'] = 'error';
+            $response['message'] = "Video upload was succesful, but compression failed.";
         }
 
     } else {
@@ -250,8 +250,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         message.classList.remove('success-message');
                         message.classList.add('error-message');
                         actionButton.onclick = function () {
-                            window.location.href = data.download;// ketika di klik maka melakukan download data
-                        }; 
+                            if (data.compressed_file) {
+                                window.location.href = data.compressed_file; // ketika di klik maka melakukan download data
+                            } else {
+                                console.error("No compressed file found");
+                            }
+                        };
                     }
                 })
                 .catch(error => {
@@ -262,7 +266,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         });
 
         // tambahkan event listener pada tombol download
-        actionButton.addEventListener('click', function() {
+        actionButton.addEventListener('click', function () {
             // dapatkan nama file yang telah diupload
             const fileName = fileInput.files[0].name;
 
@@ -272,7 +276,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // buat link download
             const downloadLink = document.createElement('a');
             downloadLink.href = 'download.php?file=' + compressedFileName;
-            downloadLink.download = compressedFileName ;
+            downloadLink.download = compressedFileName;
 
             // simulasikan klik pada link download
             downloadLink.click();
