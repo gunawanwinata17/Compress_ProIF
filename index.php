@@ -1,5 +1,5 @@
 <?php
-
+//coba kode lama
 //target direktori file yg diupload pada server 
 $targetDir = "uploads/";
 
