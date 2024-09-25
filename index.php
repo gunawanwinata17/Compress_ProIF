@@ -1,5 +1,7 @@
 <?php
-//coba kode lama
+
+require('db.php')
+
 //target direktori file yg diupload pada server 
 $targetDir = "uploads/";
 
@@ -36,12 +38,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     //pindahkan file yg diupload ke direktori target
     if (move_uploaded_file($file['tmp_name'], $targetFile)) {
 
-        $ffmpegCommand = "ffmpeg -i " . escapeshellarg($targetFile) . " -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 128k " . escapeshellarg($compressedFile);
+        $conn = new mysqli($servername, $username, $password, $dbname);
+
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        }
+
+        $sql = "INSERT INTO db (fileName, status) VALUES (?, 'pending')";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $file['name']);
+
+        //$ffmpegCommand = "ffmpeg -i " . escapeshellarg($targetFile) . " -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 128k " . escapeshellarg($compressedFile);
 
 
-        ob_start();
-        system($ffmpegCommand, $returnCode);
-        ob_end_clean();
+        // ob_start();
+        // system($ffmpegCommand, $returnCode);
+        // ob_end_clean();
 
         if ($returnCode === 0) {
             $response['status'] = 'success';
@@ -51,6 +64,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $response['status'] = 'error';
             $response['message'] = "Video upload was succesful, but compression failed.";
         }
+
+        $stmt->close();
+        $conn->close();
 
     } else {
         $response['status'] = 'error';
