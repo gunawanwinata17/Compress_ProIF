@@ -38,40 +38,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     //pindahkan file yg diupload ke direktori target
     if (move_uploaded_file($file['tmp_name'], $targetFile)) {
 
-        try {
-            $conn = new mysqli($servername, $username, $password, $dbname);
-        
-            if ($conn->connect_error) {
-                throw new Exception("Database connection failed: " . $conn->connect_error);
-            }
-        
-            $sql = "INSERT INTO db (fileName, status) VALUES (?, 0)";
-            $stmt = $conn->prepare($sql);
-            
-            if (!$stmt) {
-                throw new Exception("Prepare statement failed: " . $conn->error);
-            }
-        
-            $stmt->bind_param("s", $file['name']);
-            
-            if (!$stmt->execute()) {
-                throw new Exception("Execution failed: " . $stmt->error);
-            }
-        
-     
-            $response['status'] = 'success';
-            $response['message'] = "Record inserted successfully";
+        $conn = new mysqli($servername, $username, $password, $dbname);
 
-            $stmt->close();
-            $conn->close();
-        
-        } catch (Exception $e) {
-            
-            error_log($e->getMessage());
+        echo $conn
 
-            $response['status'] = 'error';
-            $response['message'] = $e->getMessage();
-        }
+        // if ($conn->connect_error) {
+        //     die("Connection failed: " . $conn->connect_error);
+        // }
+
+        $sql = "INSERT INTO db (fileName, status) VALUES (?, 0)";
+        
 
         //$ffmpegCommand = "ffmpeg -i " . escapeshellarg($targetFile) . " -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 128k " . escapeshellarg($compressedFile);
 
