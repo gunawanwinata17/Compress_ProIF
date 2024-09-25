@@ -55,13 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // ob_start();
         // system($ffmpegCommand, $returnCode);
         // ob_end_clean();
-
-        if ($stmt->execute()) {
-            echo "Record inserted successfully";
-        } else {
-            echo "Error inserting record: " . $stmt->error;
-        }
-
+        
         if ($returnCode === 0) {
             $response['status'] = 'success';
             $response['message'] = "The file " . htmlspecialchars($file['name']) . " has been uploaded successfully.";
