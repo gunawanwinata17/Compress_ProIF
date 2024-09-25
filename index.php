@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             die("Connection failed: " . $conn->connect_error);
         }
 
-        $sql = `INSERT INTO db (fileName, status) VALUES (?, 0)`;
+        $sql = "INSERT INTO db (fileName, status) VALUES (?, 0)";
 
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("s", $file['name']);
@@ -62,14 +62,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo "Error inserting record: " . $stmt->error;
         }
 
-        // if ($returnCode === 0) {
-        //     $response['status'] = 'success';
-        //     $response['message'] = "The file " . htmlspecialchars($file['name']) . " has been uploaded successfully.";
-        //     $response['compressed_file'] = $compressedFile;
-        // } else {
-        //     $response['status'] = 'error';
-        //     $response['message'] = "Video upload was succesful, but compression failed.";
-        // }
+        if ($returnCode === 0) {
+            $response['status'] = 'success';
+            $response['message'] = "The file " . htmlspecialchars($file['name']) . " has been uploaded successfully.";
+            $response['compressed_file'] = $compressedFile;
+        } else {
+            $response['status'] = 'error';
+            $response['message'] = "Video upload was succesful, but compression failed.";
+        }
 
         $stmt->close();
         $conn->close();
