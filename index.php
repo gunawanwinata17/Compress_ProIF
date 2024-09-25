@@ -281,6 +281,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 })
                 .catch(error => {
+                    console.error("Error:", error); 
                     message.textContent = "There was an error during the upload.";
                     message.classList.add('error-message');
                     actionButton.style.display = 'block';
