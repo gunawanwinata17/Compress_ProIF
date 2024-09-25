@@ -56,14 +56,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // system($ffmpegCommand, $returnCode);
         // ob_end_clean();
 
-        if ($returnCode === 0) {
-            $response['status'] = 'success';
-            $response['message'] = "The file " . htmlspecialchars($file['name']) . " has been uploaded successfully.";
-            $response['compressed_file'] = $compressedFile;
+        if ($stmt->execute()) {
+            echo "Record inserted successfully";
         } else {
-            $response['status'] = 'error';
-            $response['message'] = "Video upload was succesful, but compression failed.";
+            echo "Error inserting record: " . $stmt->error;
         }
+
+        // if ($returnCode === 0) {
+        //     $response['status'] = 'success';
+        //     $response['message'] = "The file " . htmlspecialchars($file['name']) . " has been uploaded successfully.";
+        //     $response['compressed_file'] = $compressedFile;
+        // } else {
+        //     $response['status'] = 'error';
+        //     $response['message'] = "Video upload was succesful, but compression failed.";
+        // }
 
         $stmt->close();
         $conn->close();
