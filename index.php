@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             die("Connection failed: " . $conn->connect_error);
         }
 
-        $sql = "INSERT INTO db (fileName, status) VALUES (?, 'pending')";
+        $sql = `INSERT INTO db (fileName, status) VALUES (?, 'pending')`;
 
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("s", $file['name']);
