@@ -1,6 +1,6 @@
 <?php
 
-require('db.php')
+require('db.php') ;
 
 //target direktori file yg diupload pada server 
 $targetDir = "uploads/";
