@@ -49,13 +49,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("s", $file['name']);
 
+        if ($stmt->execute()) {
+            $response['status'] = 'success';
+            $response['message'] = "Record inserted successfully";
+        } else {
+            $response['status'] = 'error';
+            $response['message'] = "Error inserting record: " . $stmt->error;
+        }
+
         //$ffmpegCommand = "ffmpeg -i " . escapeshellarg($targetFile) . " -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 128k " . escapeshellarg($compressedFile);
 
 
         // ob_start();
         // system($ffmpegCommand, $returnCode);
         // ob_end_clean();
-        
+
         if ($returnCode === 0) {
             $response['status'] = 'success';
             $response['message'] = "The file " . htmlspecialchars($file['name']) . " has been uploaded successfully.";
