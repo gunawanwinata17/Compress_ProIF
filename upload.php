@@ -1,105 +1,103 @@
 <?php
-// require('db.php');
+require('db.php');
 
-// //target direktori file yang diupload pada server
-// $targetDir = "uploads/";
+//target direktori file yang diupload pada server
+$targetDir = "uploads/";
 
-// if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-//     //mengambil detail dari file yang diupload
-//     $file = $_FILES['video'];
-//     $targetFile = $targetDir . basename($file['name']);
-
-
-//     $compressedFile = $targetDir . 'compressed_' . basename($file['name']);
-
-//     //periksa apakah file yang diupload dalam format video MP4
-//     $allowedType = 'video/mp4';
-
-//     //inisialisasi response
-//     $response = ['status' => '', 'message' => ''];
-
-//     //periksa apakah terjadi error saat upload video
-//     if (isset($file) && $file['error'] === UPLOAD_ERR_OK) {
-
-//         if ($file["type"] !== $allowedType) {
-//             $response['status'] = 'error';
-//             $response['message'] = "Only .mp4 video files are allowed.";
-//             echo json_encode($response);
-//             exit;
-//         }
-
-//         //pindahkan file yang diupload ke direktori target
-//         if (move_uploaded_file($file['tmp_name'], $targetFile)) {
-
-//             $conn = new mysqli($servername, $username, $password, $dbname);
-
-//             if ($conn->connect_error) {
-//                 $response['status'] = 'error';
-//                 $response['message'] = "Database connection failed: ' . $conn->connect_error";
-//                 echo json_encode($response);
-//                 exit;
-//             }
-
-//             // inisialisasi nama file
-//             $fileName = basename($file['name']); 
-
-//             // SQL query untuk memasukkan data ke dalam database
-//             $sql = "INSERT INTO db (fileName, status) VALUES (?, 0)";
-
-//             $stmt = $conn->prepare($sql);
-
-//             // bind parameter
-//             $stmt->bind_param("s", $fileName);
-
-//             if ($stmt->execute()) {
-//                 $response['status'] = 'success';
-//                 $response['message'] = 'Video uploaded and saved to database successfully.';
-//             } else {
-//                 $response['status'] = 'error';
-//                 $response['message'] = 'Error saving file information to the database: ' . $stmt->error;
-//             }
-        
-
-//         //$ffmpegCommand = "ffmpeg -i " . escapeshellarg($targetFile) . " -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 128k " . escapeshellarg($compressedFile);
+    //mengambil detail dari file yang diupload
+$file = $_FILES['video'];
+$targetFile = $targetDir . basename($file['name']);
+$uploadOk = 1;
 
 
-//         // ob_start();
-//         // system($ffmpegCommand, $returnCode);
-//             // ob_end_clean();
+//$compressedFile = $targetDir . 'compressed_' . basename($file['name']);
 
-//             // if ($returnCode === 0) {
-//             //     $response['status'] = 'success';
-//             //     $response['message'] = "The file " . htmlspecialchars($file['name']) . " has been uploaded successfully.";
-//             //     $response['compressed_file'] = $compressedFile;
-//             // } else {
-//             //     $response['status'] = 'error';
-//             //     $response['message'] = "Video upload was succesful, but compression failed.";
-//             // }
+//periksa apakah file yang diupload dalam format video MP4
+$allowedType = 'video/mp4';
 
-//             $stmt->close();
-//             $conn->close();
+//inisialisasi response
+//$response = ['status' => '', 'message' => ''];
 
-//         } else {
-//             $response['status'] = 'error';
-//             $response['message'] = 'Failed to move the uploaded file.';
-//         }
+//periksa apakah terjadi error saat upload video
+if (isset($_POST["submit"])) {
 
-//     } else {
-//         $response['status'] = 'error';
-//         $response['message'] = 'No file uploaded or an upload error occurred.';
-//     }
-
-//     echo json_encode($response) ;
+    if ($file["type"] !== $allowedType) {
+        echo "file is not .mp4" ;
+        $uploadOk = 0 ;
+    }
     
-// }
+} else {
+    echo 'No file uploaded or an upload error occurred.';
+    $uploadOk = 0 ;
+}
+
+if ($uploadOk == 0) {
+    echo "Sorry, your file was not uploaded." ;
+}else{
+
+    //pindahkan file yang diupload ke direktori target
+    if (move_uploaded_file($file['tmp_name'], $targetFile)) {
+
+        $conn = new mysqli($servername, $username, $password, $dbname);
+
+        if ($conn->connect_error) {
+            echo "Database connection failed: ' . $conn->connect_error";
+            exit;
+        }
+
+        // inisialisasi nama file
+        $fileName = basename($file['name']); 
+
+        // SQL query untuk memasukkan data ke dalam database
+        $sql = "INSERT INTO db (fileName, status) VALUES (?, 0)";
+
+        $stmt = $conn->prepare($sql);
+
+        // bind parameter
+        $stmt->bind_param("s", $fileName);
+
+        if ($stmt->execute()) {
+            echo 'Video uploaded and saved to database successfully.';
+        } else {
+            echo 'Error saving file information to the database: ' . $stmt->error;
+        }
+
+
+    //$ffmpegCommand = "ffmpeg -i " . escapeshellarg($targetFile) . " -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 128k " . escapeshellarg($compressedFile);
+
+
+    // ob_start();
+    // system($ffmpegCommand, $returnCode);
+        // ob_end_clean();
+
+        // if ($returnCode === 0) {
+        //     $response['status'] = 'success';
+        //     $response['message'] = "The file " . htmlspecialchars($file['name']) . " has been uploaded successfully.";
+        //     $response['compressed_file'] = $compressedFile;
+        // } else {
+        //     $response['status'] = 'error';
+        //     $response['message'] = "Video upload was succesful, but compression failed.";
+        // }
+
+        $stmt->close();
+        $conn->close();
+
+    } else {
+        echo 'Failed to move the uploaded file.';
+    }
+
+}
+
+
+    
+
 ?>
 
 <!DOCTYPE html>
 <html>
     <head>
         <title></title>
-        <style>
+        <!-- <style>
             body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f9;
@@ -193,23 +191,12 @@
             .error-message {
                 color: red;
             }
-        </style>
+        </style> -->
     </head>
     <body>
         <!-- <div class="container">
             <img src="LogoInformatika.png" class="logo">
             <p id="message" class="success-message"></p>
         </div> -->
-        <?php
-        $filename = $_FILES['file']['name'];
-        $location = "uploads/".$filename;
-
-        if ( move_uploaded_file($_FILES['file']['tmp_name'], $location) ) { 
-        echo '<p>upload was a success!</p>'; 
-        } else { 
-        echo '<p>upload failed.</p>'; 
-        }
-
-        ?>
     </body>
 </html>
