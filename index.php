@@ -79,8 +79,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(['status' => 'error', 'message' => 'No file uploaded or an upload error occurred.']);
     }
 
-} else {
-    echo json_encode(['status' => 'error', 'message' => 'Invalid request method.']);
 }
 
     // } else {
