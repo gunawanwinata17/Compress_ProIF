@@ -36,7 +36,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $conn = new mysqli($servername, $username, $password, $dbname);
 
             if ($conn->connect_error) {
-                echo json_encode(['status' => 'error', 'message' => 'Database connection failed: ' . $conn->connect_error]);
+                $response['status'] = 'error';
+                $response['message'] = "Database connection failed: ' . $conn->connect_error";
+                echo json_encode($response);
                 exit;
             }
 
@@ -52,9 +54,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bind_param("s", $fileName);
 
             if ($stmt->execute()) {
-                echo json_encode(['status' => 'success', 'message' => 'Video uploaded and saved to database successfully.']);
+                $response['status'] = 'success';
+                $response['message'] = 'Video uploaded and saved to database successfully.';
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'Error saving file information to the database: ' . $stmt->error]);
+                $response['status'] = 'error';
+                $response['message'] = 'Error saving file information to the database: ' . $stmt->error;
             }
         
 
@@ -78,12 +82,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $conn->close();
 
         } else {
-            echo json_encode(['status' => 'error', 'message' => 'Failed to move the uploaded file.']);
+            $response['status'] = 'error';
+            $response['message'] = 'Failed to move the uploaded file.';
         }
 
     } else {
-        echo json_encode(['status' => 'error', 'message' => 'No file uploaded or an upload error occurred.']);
+        $response['status'] = 'error';
+        $response['message'] = 'No file uploaded or an upload error occurred.';
     }
+
+    echo json_encode($response) ;
     
 }
 
