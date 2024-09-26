@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $file = $_FILES['video'];
     $targetFile = $targetDir . basename($file['name']);
 
-    //file yang sudah dicompressed (Anda bisa tambahkan fungsi compress kemudian)
+
     $compressedFile = $targetDir . 'compressed_' . basename($file['name']);
 
     //periksa apakah file yang diupload dalam format video MP4
@@ -40,15 +40,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
 
-            // Inisialisasi nama file
-            $fileName = basename($file['name']); // Nama file dari $_FILES
+            // inisialisasi nama file
+            $fileName = basename($file['name']); 
 
             // SQL query untuk memasukkan data ke dalam database
             $sql = "INSERT INTO db (fileName, status) VALUES (?, 0)";
 
             $stmt = $conn->prepare($sql);
 
-            // Bind parameter
+            // bind parameter
             $stmt->bind_param("s", $fileName);
 
             if ($stmt->execute()) {
