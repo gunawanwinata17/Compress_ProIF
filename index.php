@@ -52,10 +52,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bind_param("s", $fileName);
 
             if ($stmt->execute()) {
-                echo json_encode(['status' => 'success', 'message' => 'Video uploaded and saved to database successfully.']);
+                // simpan status success dan kirimkan nama file compressed
+                echo json_encode([
+                    'status' => 'success',
+                    'message' => 'Video uploaded and saved to database successfully.',
+                    'compressed_file' => $compressedFile // tambahkan compressed file
+                ]);
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'Error saving file information to the database: ' . $stmt->error]);
             }
+            
         
 
         //$ffmpegCommand = "ffmpeg -i " . escapeshellarg($targetFile) . " -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 128k " . escapeshellarg($compressedFile);
@@ -266,7 +272,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         uploadForm.addEventListener('submit', function (e) {
             e.preventDefault();
 
-
             const formData = new FormData(uploadForm);
 
             fetch('index.php', {
@@ -280,27 +285,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         message.classList.remove('error-message');
                         message.classList.add('success-message');
                         actionButton.style.display = 'block'; // tampilkan tombol setelah upload sukses
+                        actionButton.onclick = function () {
+                            if (data.compressed_file) {
+                                window.location.href = data.compressed_file; // ketika di klik maka melakukan download data
+                            }
+                        };
                     } else {
                         message.textContent = data.message;
                         message.classList.remove('success-message');
                         message.classList.add('error-message');
-                        actionButton.onclick = function () {
-                            if (data.compressed_file) {
-                                window.location.href = data.compressed_file; // ketika di klik maka melakukan download data
-                            } else {
-                                console.error("No compressed file found");
-                            }
-                        };
                     }
                 })
-                //jika terjadi error
                 .catch(error => {
-                    console.error("Error:", error); 
+                    console.error("Error:", error);
                     message.textContent = "There was an error during the upload.";
                     message.classList.add('error-message');
                     actionButton.style.display = 'block';
                 });
         });
+
 
         // tambahkan event listener pada tombol download
         actionButton.addEventListener('click', function () {
