@@ -124,7 +124,7 @@
         <h1>Compress Video Here</h1>
 
         <!-- form untuk upload file video -->
-        <form action="upload.php" id="uploadForm" method="post">
+        <form action="upload.php" id="uploadForm" method="post" enctype="multipart/form-data">
             <label for="videoUpload">Upload Video (.mp4):</label>
             <input type="file" name="video" id="videoUpload" accept=".mp4" required>
             <p class="drag-drop-text">or drop a file here</p>
