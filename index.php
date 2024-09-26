@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo json_encode([
                     'status' => 'success',
                     'message' => 'Video uploaded and saved to database successfully.',
-                    'compressed_file' => $compressedFile // tambahkan compressed file
+                    //'compressed_file' => $compressedFile // tambahkan compressed file
                 ]);
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'Error saving file information to the database: ' . $stmt->error]);
