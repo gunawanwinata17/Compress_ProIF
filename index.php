@@ -129,7 +129,7 @@
             <input type="file" name="video" id="videoUpload" accept=".mp4" required>
             <p class="drag-drop-text">or drop a file here</p>
             <br>
-            <input type="submit" value="Upload Video">
+            <input type="submit" value="Upload Video" name="submit">
         </form>
 
         <!-- pesan hasil upload -->
