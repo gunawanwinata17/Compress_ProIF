@@ -1,61 +1,61 @@
 <?php
 
-require('db.php') ;
+require('db.php');
 
-//target direktori file yg diupload pada server 
+//target direktori file yang diupload pada server
 $targetDir = "uploads/";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    //mengambil detail dari file yg diupload
+    //mengambil detail dari file yang diupload
     $file = $_FILES['video'];
     $targetFile = $targetDir . basename($file['name']);
 
-    //file yg sudah dicompressed
+
     $compressedFile = $targetDir . 'compressed_' . basename($file['name']);
 
-    //periksa apakah file yg diupload dalam format video MP4
+    //periksa apakah file yang diupload dalam format video MP4
     $allowedType = 'video/mp4';
 
     //inisialisasi response
     $response = ['status' => '', 'message' => ''];
 
-    //periksa apakah file yg diupload dalam format MP4
-    if ($file["type"] !== $allowedType) {
-        $response['status'] = 'error';
-        $response['message'] = "Only .mp4 video files are allowed.";
-        echo json_encode($response);
-        exit;
-    }
-
     //periksa apakah terjadi error saat upload video
-    if ($file['error'] !== UPLOAD_ERR_OK) {
-        $response['status'] = 'error';
-        $response['message'] = "Error occurred during upload.";
-        echo json_encode($response);
-        exit;
-    }
+    if (isset($file) && $file['error'] === UPLOAD_ERR_OK) {
 
-    //pindahkan file yg diupload ke direktori target
-    if (move_uploaded_file($file['tmp_name'], $targetFile)) {
-
-        $conn = new mysqli($servername, $username, $password, $dbname);
-
-        if ($conn->connect_error) {
-            echo json_encode(['status' => 'error', 'message' => 'Database connection failed: ' . $conn->connect_error]);
+        if ($file["type"] !== $allowedType) {
+            $response['status'] = 'error';
+            $response['message'] = "Only .mp4 video files are allowed.";
+            echo json_encode($response);
             exit;
         }
 
-        $sql = "INSERT INTO db (fileName, status) VALUES (?, 0)";
+        //pindahkan file yang diupload ke direktori target
+        if (move_uploaded_file($file['tmp_name'], $targetFile)) {
 
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ss", $file['name'], $targetFile);
+            $conn = new mysqli($servername, $username, $password, $dbname);
 
-        if ($stmt->execute()) {
-            echo json_encode(['status' => 'success', 'message' => 'Video uploaded successfully.']);
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'Error saving file information to the database: ' . $stmt->error]);
-        }
+            if ($conn->connect_error) {
+                echo json_encode(['status' => 'error', 'message' => 'Database connection failed: ' . $conn->connect_error]);
+                exit;
+            }
+
+            // inisialisasi nama file
+            $fileName = basename($file['name']); 
+
+            // SQL query untuk memasukkan data ke dalam database
+            $sql = "INSERT INTO db (fileName, status) VALUES (?, 0)";
+
+            $stmt = $conn->prepare($sql);
+
+            // bind parameter
+            $stmt->bind_param("s", $fileName);
+
+            if ($stmt->execute()) {
+                echo json_encode(['status' => 'success', 'message' => 'Video uploaded and saved to database successfully.']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Error saving file information to the database: ' . $stmt->error]);
+            }
         
 
         //$ffmpegCommand = "ffmpeg -i " . escapeshellarg($targetFile) . " -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 128k " . escapeshellarg($compressedFile);
@@ -76,10 +76,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $stmt->close();
             $conn->close();
+
         } else {
             echo json_encode(['status' => 'error', 'message' => 'Failed to move the uploaded file.']);
         }
+
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'No file uploaded or an upload error occurred.']);
     }
+    
+}
 
     // } else {
     //     $response['status'] = 'error';
