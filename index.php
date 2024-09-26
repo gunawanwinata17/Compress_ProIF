@@ -217,7 +217,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <h1>Compress Video Here</h1>
 
         <!-- form untuk upload file video -->
-        <form id="uploadForm" enctype="multipart/form-data">
+        <form action="upload.php" id="uploadForm" method="post">
             <label for="videoUpload">Upload Video (.mp4):</label>
             <input type="file" name="video" id="videoUpload" accept=".mp4" required>
             <p class="drag-drop-text">or drop a file here</p>
@@ -277,37 +277,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             const formData = new FormData(uploadForm);
 
-            fetch('index.php', {
-                method: 'POST',
-                body: formData
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        message.textContent = data.message;
-                        message.classList.remove('error-message');
-                        message.classList.add('success-message');
-                        actionButton.style.display = 'block'; // tampilkan tombol setelah upload sukses
-                    } else {
-                        message.textContent = data.message;
-                        message.classList.remove('success-message');
-                        message.classList.add('error-message');
-                        actionButton.onclick = function () {
-                            if (data.compressed_file) {
-                                window.location.href = data.compressed_file; // ketika di klik maka melakukan download data
-                            } else {
-                                console.error("No compressed file found");
-                            }
-                        };
-                    }
-                })
-                //jika terjadi error
-                .catch(error => {
-                    console.error("Error:", error); 
-                    message.textContent = "There was an error during the upload.";
-                    message.classList.add('error-message');
-                    actionButton.style.display = 'block';
-                });
+            // fetch('index.php', {
+            //     method: 'POST',
+            //     body: formData
+            // })
+            //     .then(response => response.json())
+            //     .then(data => {
+            //         if (data.status === 'success') {
+            //             message.textContent = data.message;
+            //             message.classList.remove('error-message');
+            //             message.classList.add('success-message');
+            //             actionButton.style.display = 'block'; // tampilkan tombol setelah upload sukses
+            //         } else {
+            //             message.textContent = data.message;
+            //             message.classList.remove('success-message');
+            //             message.classList.add('error-message');
+            //             actionButton.onclick = function () {
+            //                 if (data.compressed_file) {
+            //                     window.location.href = data.compressed_file; // ketika di klik maka melakukan download data
+            //                 } else {
+            //                     console.error("No compressed file found");
+            //                 }
+            //             };
+            //         }
+            //     })
+            //     //jika terjadi error
+            //     .catch(error => {
+            //         console.error("Error:", error); 
+            //         message.textContent = "There was an error during the upload.";
+            //         message.classList.add('error-message');
+            //         actionButton.style.display = 'block';
+            //     });
         });
 
         // tambahkan event listener pada tombol download
