@@ -20,33 +20,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     //inisialisasi response
     $response = ['status' => '', 'message' => ''];
 
-    if ($file["type"] !== $allowedType) {
-        $response['status'] = 'error';
-        $response['message'] = "Only .mp4 video files are allowed.";
-        echo json_encode($response);
-        exit;
-    }
-
     //periksa apakah terjadi error saat upload video
-    if ($file['error'] !== UPLOAD_ERR_OK) {
-        $response['status'] = 'error';
-        $response['message'] = "Error occurred while uploading the file.";
-        echo json_encode($response);
-        exit;
-    }
+    if (isset($file) && $file['error'] !== UPLOAD_ERR_OK) {
 
-    //pindahkan file yg diupload ke direktori target
+        if ($file["type"] !== $allowedType) {
+            $response['status'] = 'error';
+            $response['message'] = "Only .mp4 video files are allowed.";
+            echo json_encode($response);
+            exit;
+        }
+
+        //pindahkan file yg diupload ke direktori target
     if (move_uploaded_file($file['tmp_name'], $targetFile)) {
 
         $conn = new mysqli($servername, $username, $password, $dbname);
 
-        echo $conn ;
-
-        // if ($conn->connect_error) {
-        //     die("Connection failed: " . $conn->connect_error);
-        // }
+        if ($conn->connect_error) {
+            echo json_encode(['status' => 'error', 'message' => 'Database connection failed: ' . $conn->connect_error]);
+            exit;
+        }
 
         $sql = "INSERT INTO db (fileName, status) VALUES (?, 0)";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ss", $fileName, $targetFile);
+
+        if ($stmt->execute()) {
+            echo json_encode(['status' => 'success', 'message' => 'Video uploaded successfully.']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Error saving file information to the database: ' . $stmt->error]);
+        }
         
 
         //$ffmpegCommand = "ffmpeg -i " . escapeshellarg($targetFile) . " -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 128k " . escapeshellarg($compressedFile);
@@ -54,27 +57,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // ob_start();
         // system($ffmpegCommand, $returnCode);
-        // ob_end_clean();
+            // ob_end_clean();
 
-        if ($returnCode === 0) {
-            $response['status'] = 'success';
-            $response['message'] = "The file " . htmlspecialchars($file['name']) . " has been uploaded successfully.";
-            $response['compressed_file'] = $compressedFile;
+            // if ($returnCode === 0) {
+            //     $response['status'] = 'success';
+            //     $response['message'] = "The file " . htmlspecialchars($file['name']) . " has been uploaded successfully.";
+            //     $response['compressed_file'] = $compressedFile;
+            // } else {
+            //     $response['status'] = 'error';
+            //     $response['message'] = "Video upload was succesful, but compression failed.";
+            // }
+
+            $stmt->close();
+            $conn->close();
+
         } else {
-            $response['status'] = 'error';
-            $response['message'] = "Video upload was succesful, but compression failed.";
+            echo json_encode(['status' => 'error', 'message' => 'Failed to move the uploaded file.']);
         }
 
     } else {
-        $response['status'] = 'error';
-        $response['message'] = "Sorry, there was an error uploading your file.";
+        echo json_encode(['status' => 'error', 'message' => 'No file uploaded or an upload error occurred.']);
     }
 
-    //mengirim response sebagai JSON
-    echo json_encode($response);
-
-    exit;
+} else {
+    echo json_encode(['status' => 'error', 'message' => 'Invalid request method.']);
 }
+
+    // } else {
+    //     $response['status'] = 'error';
+    //     $response['message'] = "Sorry, there was an error uploading your file.";
+    // }
+
+    //mengirim response sebagai JSON
+    // echo json_encode($response);
+
+    // exit;
+    //}
 
 ?>
 
