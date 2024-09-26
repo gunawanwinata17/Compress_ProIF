@@ -178,44 +178,44 @@
         });
 
         // menangani pengiriman form
-        uploadForm.addEventListener('submit', function (e) {
-            e.preventDefault();
+        // uploadForm.addEventListener('submit', function (e) {
+        //     e.preventDefault();
 
 
-            const formData = new FormData(uploadForm);
+        //     const formData = new FormData(uploadForm);
 
-            // fetch('index.php', {
-            //     method: 'POST',
-            //     body: formData
-            // })
-            //     .then(response => response.json())
-            //     .then(data => {
-            //         if (data.status === 'success') {
-            //             message.textContent = data.message;
-            //             message.classList.remove('error-message');
-            //             message.classList.add('success-message');
-            //             actionButton.style.display = 'block'; // tampilkan tombol setelah upload sukses
-            //         } else {
-            //             message.textContent = data.message;
-            //             message.classList.remove('success-message');
-            //             message.classList.add('error-message');
-            //             actionButton.onclick = function () {
-            //                 if (data.compressed_file) {
-            //                     window.location.href = data.compressed_file; // ketika di klik maka melakukan download data
-            //                 } else {
-            //                     console.error("No compressed file found");
-            //                 }
-            //             };
-            //         }
-            //     })
-            //     //jika terjadi error
-            //     .catch(error => {
-            //         console.error("Error:", error); 
-            //         message.textContent = "There was an error during the upload.";
-            //         message.classList.add('error-message');
-            //         actionButton.style.display = 'block';
-            //     });
-        });
+        //     fetch('index.php', {
+        //         method: 'POST',
+        //         body: formData
+        //     })
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             if (data.status === 'success') {
+        //                 message.textContent = data.message;
+        //                 message.classList.remove('error-message');
+        //                 message.classList.add('success-message');
+        //                 actionButton.style.display = 'block'; // tampilkan tombol setelah upload sukses
+        //             } else {
+        //                 message.textContent = data.message;
+        //                 message.classList.remove('success-message');
+        //                 message.classList.add('error-message');
+        //                 actionButton.onclick = function () {
+        //                     if (data.compressed_file) {
+        //                         window.location.href = data.compressed_file; // ketika di klik maka melakukan download data
+        //                     } else {
+        //                         console.error("No compressed file found");
+        //                     }
+        //                 };
+        //             }
+        //         })
+        //         //jika terjadi error
+        //         .catch(error => {
+        //             console.error("Error:", error); 
+        //             message.textContent = "There was an error during the upload.";
+        //             message.classList.add('error-message');
+        //             actionButton.style.display = 'block';
+        //         });
+        // });
 
         // tambahkan event listener pada tombol download
         actionButton.addEventListener('click', function () {
