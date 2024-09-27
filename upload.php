@@ -4,44 +4,40 @@ require('db.php');
 //target direktori file yang diupload pada server
 $targetDir = "uploads/";
 
-    //mengambil detail dari file yang diupload
+//mengambil detail dari file yang diupload
 $file = $_FILES['video'];
 $targetFile = $targetDir . basename($file['name']);
 $uploadOk = 1;
 
-
-//$compressedFile = $targetDir . 'compressed_' . basename($file['name']);
-
 //periksa apakah file yang diupload dalam format video MP4
 $allowedType = 'video/mp4';
-
-//inisialisasi response
-//$response = ['status' => '', 'message' => ''];
 
 //periksa apakah terjadi error saat upload video
 if (isset($_POST["submit"])) {
 
     if ($file["type"] !== $allowedType) {
-        echo "file is not .mp4" ;
-        $uploadOk = 0 ;
+        $uploadOk = 0;
+        header('Location: index.php?error=type');
+        exit;
     }
     
 } else {
-    echo 'No file uploaded or an upload error occurred.';
-    $uploadOk = 0 ;
+    $uploadOk = 0;
+    header('Location: index.php?error=no_file');
+    exit;
 }
 
 if ($uploadOk == 0) {
-    echo "Sorry, your file was not uploaded." ;
-}else{
-
+    header('Location: index.php?error=upload_failed');
+    exit;
+} else {
     //pindahkan file yang diupload ke direktori target
     if (move_uploaded_file($file['tmp_name'], $targetFile)) {
 
         $conn = new mysqli($servername, $username, $password, $dbname);
 
         if ($conn->connect_error) {
-            echo "Database connection failed: ' . $conn->connect_error";
+            header('Location: index.php?error=db');
             exit;
         }
 
@@ -50,18 +46,16 @@ if ($uploadOk == 0) {
 
         // SQL query untuk memasukkan data ke dalam database
         $sql = "INSERT INTO db (fileName, status) VALUES (?, 0)";
-
         $stmt = $conn->prepare($sql);
 
         // bind parameter
         $stmt->bind_param("s", $fileName);
 
         if ($stmt->execute()) {
-            echo 'Video uploaded and saved to database successfully.';
+            header('Location: index.php?success=true');
         } else {
-            echo 'Error saving file information to the database: ' . $stmt->error;
+            header('Location: index.php?error=db_insert');
         }
-
 
     //$ffmpegCommand = "ffmpeg -i " . escapeshellarg($targetFile) . " -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 128k " . escapeshellarg($compressedFile);
 
@@ -83,9 +77,8 @@ if ($uploadOk == 0) {
         $conn->close();
 
     } else {
-        echo 'Failed to move the uploaded file.';
+        header('Location: index.php?error=move_failed');
     }
-
 }
 
 

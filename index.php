@@ -18,7 +18,6 @@
 
 <!DOCTYPE html>
 <html>
-
 <head>
     <title>Video Compressor</title>
     <style>
@@ -133,7 +132,11 @@
         </form>
 
         <!-- pesan hasil upload -->
-        <p id="message" class="success-message"></p>
+        <?php if (isset($_GET['success'])): ?>
+            <p id="message" class="success-message">File successfully uploaded.</p>
+        <?php elseif (isset($_GET['error'])): ?>
+            <p id="message" class="error-message">Failed to upload file.</p>
+        <?php endif; ?>
 
         <!-- tombol akan muncul setelah upload -->
         <button id="actionButton" class="button">Download</button>
