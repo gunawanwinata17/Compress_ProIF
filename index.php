@@ -1,12 +1,16 @@
 <?php
 require './Connection/db.php';
+require 'download.php';
+require 'process.php';
+require 'upload.php';
 
 ?>
 <!DOCTYPE html>
 <html>
 <head>
     <title>Video Compressor</title>
-    <link rel="stylesheet" href="Assets/style.css">
+    <link rel="stylesheet" href="/Assets/css/style.css">
+    <link rel="stylesheet" href="/Assets/images/LogoInformatika.png">
 </head>
 
 <body>

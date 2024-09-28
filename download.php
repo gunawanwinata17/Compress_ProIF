@@ -1,4 +1,5 @@
 <?php
+require './Connection/db.php';
 // dapatkan nama file yang akan diunduh
 $fileName = $_GET['file'];
 

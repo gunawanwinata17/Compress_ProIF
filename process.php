@@ -6,18 +6,33 @@ if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
 
-$sql = "select * from db where status = 0";
+$sql = "select fileName from db where status = 0";//filename ini butuh penyesuain pada databse namanya,
+//karena saya blum bisa masuk ke db jadi blum bisa liat nama entitasnya
 
 $result = $conn->query($sql);
 
-if($result->num.rows > 0) {
-    while($row = $result->fetch_assoc()) {
+if ($result->num . rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $fileName = $row['fileName'];
+        //inisialisasi file mentahan dan nama output file setelah kompress berhasil
+        $rawFile = 'uploads/' . $fileName;
+        $compressedFile = 'uploads/compressed_' . $fileName;
+        $ffmpegCommand = "ffmpeg -i " . escapeshellarg($rawFile) . " -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 128k " . escapeshellarg($compressedFile);
+        exec($ffmpegCommand, $output, $check);
 
+        if ($check === 0)
+            $query = "update db set status = 1 where fileName = ?";//berhasil
+        else
+            $query = "upadate db set status = -1 where fileName = ?";//gagal
+        //exec query nya
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("s", $fileName);
+        $stmt->execute();
+        $stmt->close();
     }
-}else{
+} else {
     echo "no processing file";
 }
-
 // Menutup koneksi
 $conn->close();
 ?>
