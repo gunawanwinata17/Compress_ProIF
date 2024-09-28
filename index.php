@@ -1,120 +1,12 @@
 <?php
-
-
-
-    // } else {
-    //     $response['status'] = 'error';
-    //     $response['message'] = "Sorry, there was an error uploading your file.";
-    // }
-
-    //mengirim response sebagai JSON
-    // echo json_encode($response);
-
-    // exit;
-    //}
+require './Connection/db.php';
 
 ?>
-
-
 <!DOCTYPE html>
 <html>
 <head>
     <title>Video Compressor</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .container {
-            background-color: #ffffff;
-            padding: 20px 40px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            position: relative;
-            transition: background-color 0.3s;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .container.dragover {
-            background-color: #e3f2fd;
-        }
-
-        .container h1 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 10px;
-            color: #555;
-            font-weight: bold;
-        }
-
-        input[type="file"] {
-            margin-bottom: 20px;
-        }
-
-        input[type="submit"] {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        input[type="submit"]:hover {
-            background-color: #45a049;
-        }
-
-        .logo {
-            width: 50%;
-            height: 50%;
-        }
-
-        .button {
-            display: none;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .button:hover {
-            background-color: #0056b3;
-        }
-
-        .error-message,
-        .success-message {
-            margin-top: 10px;
-            font-size: 16px;
-            text-align: center;
-        }
-
-        .success-message {
-            color: green;
-        }
-
-        .error-message {
-            color: red;
-        }
-    </style>
+    <link rel="stylesheet" href="Assets/style.css">
 </head>
 
 <body>
@@ -179,46 +71,6 @@
                 fileInput.files = droppedFiles;
             }
         });
-
-        // menangani pengiriman form
-        // uploadForm.addEventListener('submit', function (e) {
-        //     e.preventDefault();
-
-
-        //     const formData = new FormData(uploadForm);
-
-        //     fetch('index.php', {
-        //         method: 'POST',
-        //         body: formData
-        //     })
-        //         .then(response => response.json())
-        //         .then(data => {
-        //             if (data.status === 'success') {
-        //                 message.textContent = data.message;
-        //                 message.classList.remove('error-message');
-        //                 message.classList.add('success-message');
-        //                 actionButton.style.display = 'block'; // tampilkan tombol setelah upload sukses
-        //             } else {
-        //                 message.textContent = data.message;
-        //                 message.classList.remove('success-message');
-        //                 message.classList.add('error-message');
-        //                 actionButton.onclick = function () {
-        //                     if (data.compressed_file) {
-        //                         window.location.href = data.compressed_file; // ketika di klik maka melakukan download data
-        //                     } else {
-        //                         console.error("No compressed file found");
-        //                     }
-        //                 };
-        //             }
-        //         })
-        //         //jika terjadi error
-        //         .catch(error => {
-        //             console.error("Error:", error); 
-        //             message.textContent = "There was an error during the upload.";
-        //             message.classList.add('error-message');
-        //             actionButton.style.display = 'block';
-        //         });
-        // });
 
         // tambahkan event listener pada tombol download
         actionButton.addEventListener('click', function () {
