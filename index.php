@@ -72,7 +72,7 @@
         }
 
         .button {
-            display: none;
+            display: block;
             margin-top: 20px;
             padding: 10px 20px;
             background-color: #007bff;
@@ -125,8 +125,13 @@
             <p id="message" class="error-message">Failed to upload file.</p>
         <?php endif; ?>
 
+        
+        <!-- tombol download -->
+        <?php if(isset($_GET['success'] && $_GET['success=download'])) ?>
         <!-- tombol akan muncul setelah upload -->
-        <button id="actionButton" class="button">Download</button>
+            <button id="actionButton" class="button">Download</button>
+        
+        
     </div>
 
     <script>
