@@ -52,26 +52,15 @@ if ($uploadOk == 0) {
         $stmt->bind_param("s", $fileName);
 
         if ($stmt->execute()) {
-            header('Location: index.php?success=true');
+
+            //ambil id dari file yg di-insert ke db
+            $lastInsertedId = $conn->insert_id ;
+
+            //redirect ke status.php dgn id file yg didapat
+            header('Location: status.php?id=' . $lastInsertedId);
         } else {
             header('Location: index.php?error=db_insert');
         }
-
-    //$ffmpegCommand = "ffmpeg -i " . escapeshellarg($targetFile) . " -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 128k " . escapeshellarg($compressedFile);
-
-
-    // ob_start();
-    // system($ffmpegCommand, $returnCode);
-        // ob_end_clean();
-
-        // if ($returnCode === 0) {
-        //     $response['status'] = 'success';
-        //     $response['message'] = "The file " . htmlspecialchars($file['name']) . " has been uploaded successfully.";
-        //     $response['compressed_file'] = $compressedFile;
-        // } else {
-        //     $response['status'] = 'error';
-        //     $response['message'] = "Video upload was succesful, but compression failed.";
-        // }
 
         $stmt->close();
         $conn->close();

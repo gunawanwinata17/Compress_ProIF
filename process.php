@@ -22,9 +22,12 @@ if($result->num.rows > 0) {
         $rawFile = 'uploads/' . $fileName;
         $compressedFile = 'uploads/compressed_' . $fileName;
         $ffmpegCommand = "ffmpeg -i " . escapeshellarg($rawFile) . " -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 128k " . escapeshellarg($compressedFile);
-        exec($ffmpegCommand, $output, $check);
+        
+        ob_start();
+        system($ffmpegCommand, $returnCode);
+        ob_end_clean();
 
-        if ($check === 0)
+        if ($returnCode === 0)
             $query = "update db set status = 1 where fileName = ?";//berhasil
         else
             $query = "upadate db set status = -1 where fileName = ?";//gagal

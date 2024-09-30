@@ -1,18 +1,5 @@
 <?php
 
-
-
-    // } else {
-    //     $response['status'] = 'error';
-    //     $response['message'] = "Sorry, there was an error uploading your file.";
-    // }
-
-    //mengirim response sebagai JSON
-    // echo json_encode($response);
-
-    // exit;
-    //}
-
 ?>
 
 
