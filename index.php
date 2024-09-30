@@ -124,12 +124,13 @@
         <?php elseif (isset($_GET['error'])): ?>
             <p id="message" class="error-message">Failed to upload file.</p>
         <?php endif; ?>
-
+        
         
         <!-- tombol download -->
         <?php if(isset($_GET['success']) && $_GET['success'] == 'download'): ?>
-        <!-- tombol akan muncul setelah upload -->
+            <!-- tombol akan muncul setelah upload -->
             <button id="actionButton" class="button">Download</button>
+        <?php endif; ?>
         
         
     </div>
