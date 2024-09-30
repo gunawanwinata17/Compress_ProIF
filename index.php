@@ -219,7 +219,7 @@
             const fileName = fileInput.files[0].name;
 
             // dapatkan nama file yang telah dikompresi
-            const compressedFileName = 'compressed_' + fileName;
+            const compressedFile    Name = 'compressed_' + fileName;
 
             // buat link download
             const downloadLink = document.createElement('a');
