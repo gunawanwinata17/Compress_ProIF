@@ -127,7 +127,7 @@
 
         
         <!-- tombol download -->
-        <?php if(isset($_GET['success'] && $_GET['success'] == 'download')) ?>
+        <?php if(isset($_GET['success']) && $_GET['success'] == 'download'): ?>
         <!-- tombol akan muncul setelah upload -->
             <button id="actionButton" class="button">Download</button>
         
