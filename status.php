@@ -28,6 +28,7 @@ if ($stmt->execute()) {
         $link_download = "download.php?id=$id_file";
         $message = "File berhasil diupload dan dikompresi" ;
         $statusClass = "success" ;
+        header('Location: download.php');
     } elseif ($data['status'] == -1) {
         // Jika status = -1 artinya kompresi gagal. Tampilkan "kompresi gagal"
         $message = "Kompresi gagal. Silakan coba lagi.";
