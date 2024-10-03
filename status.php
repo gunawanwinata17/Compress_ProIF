@@ -50,7 +50,7 @@ $conn->close();
 <!DOCTYPE html>
 <head>
     <title>Video Compressor</title>
-    <meta http-equiv="refresh" content="5" >
+    <meta http-equiv="refresh" content="10" >
     <style>
         body {
             font-family: Arial, sans-serif;
