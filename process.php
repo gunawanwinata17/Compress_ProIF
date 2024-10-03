@@ -9,7 +9,7 @@ if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
 
-$sql = "select * from db where status = 0"
+$sql = "select * from db where status = 0" ;
 
 $result = $conn->query($sql);
 
