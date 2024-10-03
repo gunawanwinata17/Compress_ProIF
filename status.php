@@ -27,9 +27,11 @@ if ($stmt->execute()) {
         // Jika status = 1, artinya succes & tampilkan link download
         $link_download = "download.php?id=$id_file";
         $message = "File berhasil diupload dan dikompresi" ;
+        $statusClass = "success"
     } elseif ($data['status'] == -1) {
         // Jika status = -1 artinya kompresi gagal. Tampilkan "kompresi gagal"
         $message = "Kompresi gagal. Silakan coba lagi.";
+        $statusClass = "failed"
     } elseif ($data['status'] == 0) {
         // Jika status = 0, artinya masih processing & tampilkan "mohon tunggu"
         $message = "Mohon tunggu. File sedang diproses.";
@@ -97,11 +99,11 @@ $conn->close();
             text-align: center;
         }
 
-        .success-message {
+        .success {
             color: green;
         }
 
-        .error-message {
+        .failed {
             color: red;
         }
     </style>
@@ -111,15 +113,17 @@ $conn->close();
     <div class="container" id="dropContainer">
         <img src="LogoInformatika.png" class="logo">
         <h1>Status</h1>
-        <p id=statusMessage></p>
+        <p id=status-message></p>
         
     </div>
 
     <script>
         
-        const statusMessage = document.getElementById('statusMessage');
+        const statusMessage = document.getElementById(status-message);
         const message = "<?php echo $message;?>" ;
+        const statusClass = "<?php echo $statusClass; ?>" ;
 
+        statusMessage.classList.add(statusClass)
         statusMessage.innerHTML = message ;
 
 
