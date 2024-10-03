@@ -21,7 +21,7 @@ if($result->num_rows > 0) {
         //inisialisasi file mentahan dan nama output file setelah kompress berhasil
         $rawFile = 'uploads/' . $fileName;
         $compressedFile = 'uploads/compressed_' . $fileName;
-        $ffmpegCommand = "ffmpeg -i " . escapeshellarg($rawFile) . " " . escapeshellarg($compressedFile);
+        $ffmpegCommand = "ffmpeg -i " . escapeshellarg($rawFile) .  " -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 128k " . escapeshellarg($compressedFile);
         
         ob_start();
         system($ffmpegCommand, $returnCode);
