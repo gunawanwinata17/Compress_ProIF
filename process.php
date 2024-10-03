@@ -13,7 +13,7 @@ $sql = "select * from db where status = 0" ;
 
 $result = $conn->query($sql);
 
-if($result->num.rows > 0) {
+if($result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
 
         $fileName = $row['fileName'];
@@ -30,7 +30,7 @@ if($result->num.rows > 0) {
         if ($returnCode === 0)
             $query = "update db set status = 1 where fileName = ?";//berhasil
         else
-            $query = "upadate db set status = -1 where fileName = ?";//gagal
+            $query = "update db set status = -1 where fileName = ?";//gagal
         
             //exec query nya
         $stmt = $conn->prepare($query);
