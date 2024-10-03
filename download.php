@@ -72,11 +72,12 @@
         document.getElementById('downloadButton').addEventListener('click', function () {
             // dapatkan nama file dari query parameter
             const fileName = '<?php echo $_GET['file']; ?>';
+            const compressedFileName = 'compressed_' + fileName;
 
             // buat link download
             const downloadLink = document.createElement('a');
-            downloadLink.href = 'uploads/compressed_' + fileName;
-            downloadLink.download = fileName;
+            downloadLink.href = 'uploads/' + compressedFileName;
+            downloadLink.download = compressedFileName ;
             // simulasikan klik pada link download
             downloadLink.click();
         });
