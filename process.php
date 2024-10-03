@@ -1,5 +1,5 @@
 <?php
-require('db.php')
+require('db.php') ;
 
 // Membuat koneksi
 $conn = new mysqli($servername, $username, $password, $dbname);
