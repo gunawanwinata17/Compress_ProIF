@@ -40,7 +40,7 @@ if($result->num.rows > 0) {
 
     }
 }else{
-    echo "no processing file"
+    echo "no processing file" ;
 }
 
 // Menutup koneksi
