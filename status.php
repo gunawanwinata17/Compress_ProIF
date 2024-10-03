@@ -35,6 +35,7 @@ if ($stmt->execute()) {
     } elseif ($data['status'] == 0) {
         // Jika status = 0, artinya masih processing & tampilkan "mohon tunggu"
         $message = "Mohon tunggu. File sedang diproses.";
+        $statusClass = "waiting"
         // Auto refresh dalam 30 dtk
     }
 } else {
@@ -106,6 +107,11 @@ $conn->close();
         .failed {
             color: red;
         }
+
+        .waiting {
+            color: blue;
+        }
+
     </style>
 </head>
 
