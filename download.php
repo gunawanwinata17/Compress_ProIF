@@ -75,7 +75,7 @@
 
             // buat link download
             const downloadLink = document.createElement('a');
-            downloadLink.href = 'uploads/' + fileName;
+            downloadLink.href = 'uploads/compressed_' + fileName;
             downloadLink.download = fileName;
             // simulasikan klik pada link download
             downloadLink.click();
