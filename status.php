@@ -119,13 +119,13 @@ $conn->close();
     <div class="container" id="dropContainer">
         <img src="LogoInformatika.png" class="logo">
         <h1>Status</h1>
-        <p id=status-message></p>
+        <p id=statusMessage></p>
         
     </div>
 
     <script>
         
-        const statusMessage = document.getElementById(status-message);
+        const statusMessage = document.getElementById("statusMessage");
         const message = "<?php echo $message;?>" ;
         const statusClass = "<?php echo $statusClass; ?>" ;
 
