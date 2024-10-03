@@ -129,7 +129,7 @@ $conn->close();
         const message = "<?php echo $message;?>" ;
         const statusClass = "<?php echo $statusClass; ?>" ;
 
-        statusMessage.classList.add(statusClass)
+        statusMessage.classList.add(statusClass) ;
         statusMessage.innerHTML = message ;
 
 
