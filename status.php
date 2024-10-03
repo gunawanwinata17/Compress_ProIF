@@ -13,7 +13,8 @@ if ($conn->connect_error) {
 }
 
 // SQL query untuk memasukkan data ke dalam database
-$sql = "SELECT status FROM db WHERE id = ?";
+$sql = "SELECT * FROM db WHERE id = ?";
+
 $stmt = $conn->prepare($sql);
 
 // bind parameter
@@ -22,13 +23,14 @@ $stmt->bind_param("i", $id_file);
 if ($stmt->execute()) {
     $result = $stmt->get_result();
     $data = $result->fetch_assoc();
-
+    
     if ($data['status'] == 1) {
         // Jika status = 1, artinya succes & tampilkan link download
-        $link_download = "download.php?id=$id_file";
+
         $message = "File berhasil diupload dan dikompresi" ;
         $statusClass = "success" ;
-        header('Location: download.php');
+        $filename = $data['fileName'] ;
+        header('Location: download.php?file=' . urldecode($filename));
     } elseif ($data['status'] == -1) {
         // Jika status = -1 artinya kompresi gagal. Tampilkan "kompresi gagal"
         $message = "Kompresi gagal. Silakan coba lagi.";
