@@ -40,6 +40,10 @@ if ($stmt->execute()) {
         $message = "Mohon tunggu. File sedang diproses.";
         $statusClass = "waiting" ;
         // Auto refresh dalam 30 dtk
+    } elseif ($data['status'] == 0) {
+        // Jika status = 0, artinya masih processing & tampilkan "mohon tunggu"
+        $message = "File sudah berhasil diupload.";
+        $statusClass = "uploaded" ;
     }
 } else {
     echo "Error: " . $stmt->error;
