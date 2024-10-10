@@ -35,11 +35,15 @@ if ($stmt->execute()) {
         // Jika status = -1 artinya kompresi gagal. Tampilkan "kompresi gagal"
         $message = "Kompresi gagal. Silakan coba lagi.";
         $statusClass = "failed" ;
-    } elseif ($data['status'] == 0) {
-        // Jika status = 0, artinya masih processing & tampilkan "mohon tunggu"
+    } elseif ($data['status'] == 2) {
+        // Jika status = 2, artinya masih processing & tampilkan "mohon tunggu"
         $message = "Mohon tunggu. File sedang diproses.";
         $statusClass = "waiting" ;
         // Auto refresh dalam 30 dtk
+    } elseif ($data['status'] == 0) {
+        // Jika status = 0, artinya masih processing & tampilkan "mohon tunggu"
+        $message = "File sudah berhasil diupload.";
+        $statusClass = "uploaded" ;
     }
 } else {
     echo "Error: " . $stmt->error;

@@ -1,5 +1,5 @@
 <?php
-require('db.php') ;
+require('db.php');
 
 // Membuat koneksi
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -9,7 +9,7 @@ if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
 
-$sql = "select * from db where status = 0" ;
+$sql = "select * from db where status = 0";
 
 $result = $conn->query($sql);
 
@@ -19,11 +19,18 @@ if($result->num_rows > 0) {
         $fileName = $row['fileName'];
         $fileID = $row['id'];
 
-        //inisialisasi file mentahan dan nama output file setelah kompress berhasil
+        // Ubah status menjadi 2 (sedang diproses)
+        $queryUpdate = "update db set status = 2 where fileName = ?";
+        $stmtUpdate = $conn->prepare($queryUpdate);
+        $stmtUpdate->bind_param("s", $fileName);
+        $stmtUpdate->execute();
+        $stmtUpdate->close();
+
+        // Inisialisasi file mentahan dan nama output file setelah kompres berhasil
         $rawFile = 'uploads/' . $fileName;
         $compressedFile = 'uploads/compressed_' . $fileName . $fileID;
         $ffmpegCommand = "ffmpeg -i " . escapeshellarg($rawFile) .  " -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 128k " . escapeshellarg($compressedFile);
-        
+
         ob_start();
         system($ffmpegCommand, $returnCode);
         $output = ob_get_contents() ;
@@ -40,10 +47,9 @@ if($result->num_rows > 0) {
         $stmt->bind_param("s", $fileName);
         $stmt->execute();
         $stmt->close();
-
     }
-}else{
-    echo "no processing file" ;
+} else {
+    echo "no processing file";
 }
 
 // Menutup koneksi
