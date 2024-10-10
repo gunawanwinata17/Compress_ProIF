@@ -32,8 +32,8 @@ if($result->num_rows > 0) {
         $ffmpegCommand = "ffmpeg -i " . escapeshellarg($rawFile) .  " -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 128k " . escapeshellarg($compressedFile);
 
         ob_start();
-        system($ffmpegCommand, $returnCode);
-        $output = ob_get_contents() ;
+        system("$ffmpegCommand 2>&1", $returnCode); 
+        $output = ob_get_contents();
         ob_end_clean();
 
         if ($returnCode === 0)
