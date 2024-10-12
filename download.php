@@ -1,3 +1,14 @@
+<?php 
+
+require('db.php');
+
+if (isset($_GET['file']) and isset($_GET['id'])) {
+    $filename = urldecode($_GET['file']);
+    $id = urldecode($_GET['id']);
+}
+
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -70,9 +81,11 @@
     <script>
         // tambahkan event listener pada tombol download
         document.getElementById('downloadButton').addEventListener('click', function () {
+
             // dapatkan nama file dari query parameter
-            const fileName = '<?php echo $_GET['file']; ?>';
-            const compressedFileName = 'compressed_' + fileName;
+            const fileName = '<?php echo $filename; ?>';
+            const id = '<?php echo $id; ?>';
+            const compressedFileName = 'compressed_' + id + '_' + fileName;
 
             // buat link download
             const downloadLink = document.createElement('a');
