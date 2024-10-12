@@ -36,10 +36,12 @@ if($result->num_rows > 0) {
         $output = ob_get_contents();
         ob_end_clean();
 
+        echo $returnCode;
+
         if ($returnCode === 0)
-            $query = "update db set status = 1 where fileName = ? and id = ?";//berhasil
+            $query = "update db set status = 1 where fileName = ? AND id = ?";//berhasil
         else
-            $query = "update db set status = -1 where fileName = ? and id = ?";//gagal
+            $query = "update db set status = -1 where fileName = ? AND id = ?";//gagal
             echo "Error: " . $output ;
         
             //exec query nya
