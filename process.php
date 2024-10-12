@@ -36,6 +36,9 @@ if($result->num_rows > 0) {
         system("$ffmpegCommand 2>&1", $returnCode); 
         $output = ob_get_contents();
         ob_end_clean();
+
+        //ngecek error cron tab
+        $logFile = '/home/gunawan/proif/Compress_ProIF/logfile.log';
         file_put_contents($logFile, $output, FILE_APPEND);
 
         echo $returnCode;
