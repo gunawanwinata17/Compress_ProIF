@@ -46,7 +46,7 @@ if($result->num_rows > 0) {
         
             //exec query nya
         $stmt = $conn->prepare($query);
-        $stmt->bind_param("s", $fileName, $fileID);
+        $stmt->bind_param("si", $fileName, $fileID);
         $stmt->execute();
         $stmt->close();
     }
