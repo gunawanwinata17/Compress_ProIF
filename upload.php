@@ -66,6 +66,9 @@ if ($uploadOk == 0) {
         $conn->close();
 
     } else {
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            echo "Error during file upload: " . $file['error'];
+        }
         header('Location: index.php?error=move_failed');
     }
 }
