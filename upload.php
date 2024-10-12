@@ -69,7 +69,7 @@ if ($uploadOk == 0) {
         if ($file['error'] !== UPLOAD_ERR_OK) {
             echo "Error during file upload: " . $file['error'];
         }
-        header('Location: index.php?error=move_failed');
+        // header('Location: index.php?error=move_failed');
     }
 }
 
