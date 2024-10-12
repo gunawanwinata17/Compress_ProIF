@@ -4,10 +4,6 @@ require('db.php');
 //target direktori file yang diupload pada server
 $targetDir = "uploads/";
 
-if (!is_dir($targetDir)) {
-    mkdir($targetDir, 0777, true);
-}
-
 //mengambil detail dari file yang diupload
 $file = $_FILES['video'];
 $targetFile = $targetDir . basename($file['name']);
