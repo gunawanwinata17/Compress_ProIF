@@ -37,14 +37,14 @@ if($result->num_rows > 0) {
         ob_end_clean();
 
         if ($returnCode === 0)
-            $query = "update db set status = 1 where fileName = ?";//berhasil
+            $query = "update db set status = 1 where fileName = ? and id = ?";//berhasil
         else
-            $query = "update db set status = -1 where fileName = ?";//gagal
+            $query = "update db set status = -1 where fileName = ? and id = ?";//gagal
             echo "Error: " . $output ;
         
             //exec query nya
         $stmt = $conn->prepare($query);
-        $stmt->bind_param("s", $fileName);
+        $stmt->bind_param("s", $fileName, $fileID);
         $stmt->execute();
         $stmt->close();
     }
