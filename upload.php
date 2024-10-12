@@ -5,7 +5,7 @@ require('db.php');
 $targetDir = "uploads/";
 
 if (!is_dir($targetDir)) {
-    mkdir($targetDir, 0755, true);
+    mkdir($targetDir, 0775, true);
 }
 
 //mengambil detail dari file yang diupload

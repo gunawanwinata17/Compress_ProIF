@@ -122,7 +122,7 @@
         <?php if (isset($_GET['success'])): ?>
             <p id="message" class="success-message">File successfully uploaded.</p>
         <?php elseif (isset($_GET['error'])): ?>
-            <p id="message" class="error-message">Failed to upload file.</p>
+            <p id="message" class="error-message">Failed to upload file</p>
         <?php endif; ?>
         
         
