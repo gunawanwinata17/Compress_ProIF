@@ -20,7 +20,7 @@ if($result->num_rows > 0) {
         $fileID = $row['id'];
 
         // Ubah status menjadi 2 (sedang diproses)
-        $queryUpdate = "update db set status = 2 where fileName = ? AND id =";
+        $queryUpdate = "update db set status = 2 where fileName = ? AND id = ?";
         $stmtUpdate = $conn->prepare($queryUpdate);
         $stmtUpdate->bind_param("si", $fileName, $fileID);
         $stmtUpdate->execute();
