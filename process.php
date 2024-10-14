@@ -37,8 +37,8 @@ if($result->num_rows > 0) {
         ob_end_clean();
 
         //ngecek error cron tab
-        $logFile = '/home/gunawan/proif/Compress_ProIF/logfile.log';
-        file_put_contents($logFile, $output, FILE_APPEND);
+        // $logFile = '/home/gunawan/proif/Compress_ProIF/logfile.log';
+        // file_put_contents($logFile, $output, FILE_APPEND);
 
         echo $returnCode;
 
