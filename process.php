@@ -27,9 +27,15 @@ if($result->num_rows > 0) {
         $stmtUpdate->close();
 
         // Inisialisasi file mentahan dan nama output file setelah kompres berhasil
-        $rawFile = 'uploads/' . $fileName;
-        $compressedFile = 'uploads/compressed_' . $fileID . '_' . $fileName;
-        $ffmpegCommand = "ffmpeg -i "  . escapeshellarg($rawFile) .  " -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 128k " . escapeshellarg($compressedFile);
+        $rawFile = '/home/gunawan/proif/Compress_ProIF/uploads/' . $fileName;
+        $compressedFile = '/home/gunawan/proif/Compress_ProIF/uploads/compressed_' . $fileID . '_' . $fileName;
+        $ffmpegPath = '/usr/bin/ffmpeg';
+        $ffmpegCommand = $ffmpegPath . " -i "  . escapeshellarg($rawFile) .  " -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 128k " . escapeshellarg($compressedFile);
+
+        //filePath tanpa cron job
+        // $rawFile = 'uploads/' . $fileName;
+        // $compressedFile = 'uploads/compressed_' . $fileID . '_' . $fileName;
+        // $ffmpegCommand = "ffmpeg -i "  . escapeshellarg($rawFile) .  " -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 128k " . escapeshellarg($compressedFile);
 
         ob_start();
         system("$ffmpegCommand 2>&1", $returnCode); 
